@@ -1,0 +1,42 @@
+import json import botos
+from datetime import datetime
+dynamodb = boto3. client ('dynamodb')
+det Lambda_handler (event, context): for record in eventl 'Records'1:
+message = json. loads (record[ 'body' ])
+voucher_code = message. get ( 'voucher_code')
+txn_type = message. get("txn_type')
+txn _date = message get('txn_date')
+acc_no = message get ( 'acc_no')
+txn_amt = message get('txn_amt' )
+source_system_id = message get ('source_system_id' )
+source_system_txn_id = message get 'source_system_txn_id' )
+valid_c = (txn_date is not None) and (txn_amt is not None) and (txn_amt › 0)
+if not valid c:
+invalid_item = {
+'voucher_code': {'S': voucher_code}, txn_type': {'S': txn_type},
+'txn_date': f'S': txn_date if txn_date else 'Invalid Date'},
+'acc_no': {'N': str(acc_no)},
+txn_amt': {'N': str(txn_amt) if txn_amt else 'Invalid Amount' },
+' source_system_id': {'N': str(source_system_id)},
+'source_system_txn_id': {'S': source_system_txn_id},
+}
+dynamodb. put_item(TableName='team_invalid _trans_project3', Item=invalid_item)
+print(f"invalid transaction values pushed to teamo_invalid_trans_project3: (invalid_item}")
+continue
+txn_id = int(datetime.now( ).timestamp () * 1000)
+item = {
+'txn_id': {'N': str(txn_id)},
+'voucher_code': {'S': voucher_code},
+' txn_type': {'s' : txn_type},
+' txn_date': ('S': txn_date},
+'acc_no': {'N': stracc_no)},
+' txn_amt': {'N': str(txn_amt) },
+'source_system_id': {'N': str(source_system_id)},
+'source_system_txn_id': {'S': source_system_txn_id}
+}
+dynamodb.put_item(TableName='ledger_txn_t6', Item=item)
+print(f"items inserted to ledger_txn_t6 table: {item}")
+return 1
+' statusCode': 200,
+'body': json.dumps ( 'Transactions processed successfully')
+}
